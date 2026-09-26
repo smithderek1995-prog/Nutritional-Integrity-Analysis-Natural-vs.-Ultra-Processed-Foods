@@ -2,6 +2,8 @@ Nutritional Integrity Analysis: Natural vs. Ultra-Processed Foods
 
 Project Overview
 
+<img width="1325" height="740" alt="Nutrition Facts Screenshot" src="https://github.com/user-attachments/assets/55a2a778-dc20-480b-bf2a-3dfc81a6d9a6" />
+
 This project analyzes a 644,000-row USDA nutritional database to visually distinguish the nutritional profiles of "Whole & Natural" foods against "Processed & Man-Made" alternatives. Designed with half-marathon and distance race preparation in mind, the dashboard highlights hidden industrial additives (Sodium, Added Sugars) and stripped essentials (Fiber, Potassium) while intentionally keeping endurance fuel metrics (Carbohydrates, Calories) neutral.
 
 Tech Stack Used:
@@ -44,8 +46,7 @@ September 23 - 25, 2026
 
 Upon loading the data into Power BI, I discovered deep inconsistencies in the naming conventions of the USDA dataset. Writing a massive DAX SWITCH statement to categorize thousands of rows caused severe performance issues.
 
-Solut<img width="1325" height="740" alt="Nutrition Facts Screenshot" src="https://github.com/user-attachments/assets/55a2a778-dc20-480b-bf2a-3dfc81a6d9a6" />
-ion: I created a physical mapping table and pushed the classification logic upstream into Power Query. I utilized AI to rapidly parse and categorize thousands of unique food descriptions into logical buckets. To prevent bogging down the engine by scanning the massive database multiple times, I optimized the M code to scan each row exactly once, grab both mapping columns using a temporary Record, and expand them instantly.
+Solution: I created a physical mapping table and pushed the classification logic upstream into Power Query. I utilized AI to rapidly parse and categorize thousands of unique food descriptions into logical buckets. To prevent bogging down the engine by scanning the massive database multiple times, I optimized the M code to scan each row exactly once, grab both mapping columns using a temporary Record, and expand them instantly.
 
 let
     // ... [Source and connection steps] ...
