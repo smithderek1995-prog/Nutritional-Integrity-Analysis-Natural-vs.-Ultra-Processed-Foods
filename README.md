@@ -1,6 +1,7 @@
 Nutritional Integrity Analysis: Natural vs. Ultra-Processed Foods
 
 Project Overview
+
 This project analyzes a 644,000-row USDA nutritional database to visually distinguish the nutritional profiles of "Whole & Natural" foods against "Processed & Man-Made" alternatives. Designed with half-marathon and distance race preparation in mind, the dashboard highlights hidden industrial additives (Sodium, Added Sugars) and stripped essentials (Fiber, Potassium) while intentionally keeping endurance fuel metrics (Carbohydrates, Calories) neutral.
 
 Tech Stack Used:
@@ -14,11 +15,13 @@ DAX: Dynamic measures and custom conditional formatting.
 AI / LLMs: Leveraged for rapid text-parsing of large categorical datasets and M code optimization.
 _______________________________________________________________________________________
 Phase 1: Data Extraction & Relational Modeling (SQL)
+
 September 21 - 22, 2026
 
 The initial data exploration and joining were performed in Google BigQuery. I utilized INNER JOINs to merge the core food descriptions with their specific nutrient values, intentionally filtering out blank or zero-logged foods to maintain data integrity.
 
 SQL
+
 SELECT 
   f.description AS food_name,
   n.name AS nutrient_name,
@@ -36,13 +39,14 @@ ORDER BY
   nutrient_name
 _________________________________________________________________________________________
 Phase 2: ETL & Upstream Optimization (Power Query)
+
 September 23 - 25, 2026
 
 Upon loading the data into Power BI, I discovered deep inconsistencies in the naming conventions of the USDA dataset. Writing a massive DAX SWITCH statement to categorize thousands of rows caused severe performance issues.
 
-Solution: I created a physical mapping table and pushed the classification logic upstream into Power Query. I utilized AI to rapidly parse and categorize thousands of unique food descriptions into logical buckets. To prevent bogging down the engine by scanning the massive database multiple times, I optimized the M code to scan each row exactly once, grab both mapping columns using a temporary Record, and expand them instantly.
+Solut<img width="1325" height="740" alt="Nutrition Facts Screenshot" src="https://github.com/user-attachments/assets/55a2a778-dc20-480b-bf2a-3dfc81a6d9a6" />
+ion: I created a physical mapping table and pushed the classification logic upstream into Power Query. I utilized AI to rapidly parse and categorize thousands of unique food descriptions into logical buckets. To prevent bogging down the engine by scanning the massive database multiple times, I optimized the M code to scan each row exactly once, grab both mapping columns using a temporary Record, and expand them instantly.
 
-Code snippet
 let
     // ... [Source and connection steps] ...
     
@@ -67,6 +71,7 @@ in
     ExpandedColumns
 __________________________________________________________________________________________
 Phase 3: Analytical Problem Solving (EDA)
+
 September 25, 2026
 
 During exploratory data analysis and visual design, I encountered and solved two major data traps:
@@ -76,14 +81,15 @@ The Unit Mismatch (Apples to Apples): When building the Scatter Plot to compare 
 The Fiber Paradox (Contextual Averages): Initially, "Whole & Natural Foods" appeared to have lower average fiber than processed foods. By interrogating the data, I identified that the natural category was heavily anchored by raw meats (0g fiber) and water-dense fresh produce, whereas processed foods (like bran cereals and dehydrated bars) had artificially concentrated nutrients. Building interactive slicers allowed the end-user to filter by specific food groups, isolating variables and revealing the true data story.
 __________________________________________________________________________________________
 Phase 4: Dashboard Design & Advanced DAX
+
 September 25, 2026
 
 The front-end design required custom solutions to tell the right story. Standard Power BI conditional formatting could not handle a Star Schema where all nutrient values lived in a single amount column.
 
 Dynamic Conditional Formatting:
+
 I wrote a dynamic DAX measure utilizing the UK Food Standards Agency Traffic Light thresholds. Because this tool evaluates endurance training fuel, core macros (Carbohydrates, Protein, Fat, Calories) are treated as essential baseline metrics rather than negative health indicators. The code intentionally excludes these macros from the formatting rules, isolating the red/yellow/green alerts strictly to industrial additives (Sodium, Sugar, Trans Fats) and stripped essentials (Fiber, Potassium).
 
-Code snippet
 Nutrient Traffic Light = 
 VAR CurrentNutrient = MAX('nutrient'[name])
 VAR CurrentValue = SUM('food_nutrition'[amount])
@@ -118,9 +124,9 @@ SWITCH(TRUE(),
     BLANK()
 )
 Custom Sort Ordering:
+
 To improve UX and narrative flow, I implemented a custom Sort By DAX column, forcing the matrix visual to cleanly separate uncolored baseline macros on the left from the color-coded processing indicators on the right.
 
-Code snippet
 Nutrient Sort Order = 
 SWITCH('nutrient'[name],
     "Energy", 1,
